@@ -1,68 +1,71 @@
-loadstring(game:HttpGet(("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua")))()
+local function decodeBase64(data)
+    local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+    data = string.gsub(data, '[^' .. b .. '=]', '')
+    return (data:gsub('.', function(x)
+        if (x == '=') then return '' end
+        local r,f='',(b:find(x)-1)
+        for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and '1' or '0') end
+        return r;
+    end):gsub('%d%d%d?%d?%d?%d?', function(x)
+        if (#x ~= 6) then return '' end
+        local c=0
+        for i=1,6 do c=c+(x:sub(i,i)=='1' and 2^(6-i) or 0) end
+        return string.char(c)
+    end))
+end
 
-       local Window = MakeWindow({
-         Hub = {
-         Title = "Hà Nhân (PVP)",
-         Animation = "HUY ĐZ"
-         },
-        Key = {
+local encodedURL = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2RhdWNvYm9uaGkvVWktUmVkei1WMi9yZWZzL2hlYWRzL21haW4vVWlSRUR6VjIubHVh"
+loadstring(game:HttpGet(decodeBase64(encodedURL)))()
+
+local createUI = MakeWindow({
+    Hub = {
+        Title = "Hà Nhân (PVP)",
+        Animation = "HUY ĐZ"
+    },
+    Key = {
         KeySystem = false,
         Title = "Key System",
         Description = "",
         KeyLink = "",
         Keys = {"1234"},
         Notifi = {
-        Notifications = true,
-        CorrectKey = "Running the Script...",
-       Incorrectkey = "The key is incorrect",
-       CopyKeyLink = "Copied to Clipboard"
-      }
+            Notifications = true,
+            CorrectKey = "Running the Script...",
+            Incorrectkey = "The key is incorrect",
+            CopyKeyLink = "Copied to Clipboard"
+        }
     }
-  })
+})
 
-       MinimizeButton({
-       Image = "http://www.roblox.com/asset/?id=138967996620640",
-       Size = {60, 60},
-       Color = Color3.fromRGB(10, 10, 10),
-       Corner = true,
-       Stroke = false,
-       StrokeColor = Color3.fromRGB(255, 0, 0)
-      })
-      
------- Tab
-     local Tab1o = MakeTab({Name = "MAIN"})
+MinimizeButton({
+    Image = "http://www.roblox.com/asset/?id=138967996620640",
+    Size = {60, 60},
+    Color = Color3.fromRGB(10, 10, 10),
+    Corner = true,
+    Stroke = false,
+    StrokeColor = Color3.fromRGB(255, 0, 0)
+})
 
-     
--------TOGGLE 
+local mainTab = MakeTab({Name = "MAIN"})
 
-     Toggle = AddToggle(Tab1o, {
-      Name = ":)",
-      Default = false,
-      Callback = function()
-     end
+Toggle = AddToggle(mainTab, {
+    Name = ":)",
+    Default = false,
+    Callback = function() end
+})
+
+local encodedScripts = {
+    HitBox = "aHR0cHM6Ly9zY3JpcHRibG94LmNvbS9yYXcvVW5pdmVyc2FsLVNjcmlwdC1VcGRhdGUtc2NyaXB0LWhpdGJveC05MzI2",
+    Aimlock = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0hvbWVNYWRlU2NyaXB0cy9DYW1sb2NrLWFpbWxvY2svbWFpbi9vYmZfV3hyNlcneg==",
+    FixLag = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1R1cmJvTGl0ZS9TY3JpcHQvbWFpbi9GaXhMYWcubHVh",
+    AimlockNPC = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2xhbWh1eW9rL0gtTkhOLUFERC1HQU1FLy9yZWZzL2hlYWRzL21haW4vQUlNTE9DSyUyME5QQyUyMFYy"
+}
+
+for name, encodedURL in pairs(encodedScripts) do
+    AddButton(mainTab, {
+        Name = name,
+        Callback = function()
+            loadstring(game:HttpGet(decodeBase64(encodedURL)))()
+        end
     })
-    
-------- BUTTON
-    
-    AddButton(Tab1o, {
-     Name = "HitBox",
-    Callback = function()
-	  loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Update-script-hitbox-9326"))()
-  end
-  })
-     AddButton(Tab1o, {
-     Name = "Aimlock",
-    Callback = function()
-	  loadstring(game:HttpGet("https://raw.githubusercontent.com/HomeMadeScripts/Camlock-aimlock/main/obf_Wxr6QgzF76G1y2Ch77KN4Zt5Nz0A6GIl61gitv3mRR2t3V103al5d0g26s4KY04r.lua.txt"))()
-  end
-  })   AddButton(Tab1o, {
-     Name = "FIX LAG",
-    Callback = function()
-	  loadstring(game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua"))()
-  end
-  })   AddButton(Tab1o, {
-     Name = "FIX LAG",
-    Callback = function()
-	  loadstring(game:HttpGet("https://raw.githubusercontent.com/lamhuyok/H-NH-N-ADD-GAME-/refs/heads/main/AIMLOCK%20NPC%20V2"))()
-  end
-  })
+end
